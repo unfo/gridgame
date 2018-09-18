@@ -2,7 +2,14 @@
     <head>
         <title>The Grid Game</title>
         <style>
-            svg { margin: -3; padding: 0; } /* margin -3?! Y U SO SRS */
+            svg {
+                 margin: -3; padding: 0; 
+                 border: 1px dashed lightgrey;
+            } /* margin -3?! Y U SO SRS */
+            .top { border-top: 1px solid red; }
+            .bottom { border-bottom: 1px solid red; }
+            .left { border-left: 1px solid red; }
+            .right { border-right: 1px solid red; }
             #grid-container {
                 display: none;
                 background: white;
@@ -14,7 +21,7 @@
     <body>
         <input type="number" id="gridsize" value="5"/> <button id="create-grid">Create grid</button>
         <template id="svg-holder">
-            <svg xmlns="http://www.w3.org/2000/svg" class="boxtemplate" viewBox="0 0 100 100" style="border: 1px dashed lightgrey">
+            <svg xmlns="http://www.w3.org/2000/svg" class="boxtemplate" viewBox="0 0 100 100">
                 <style>
                     polygon {
                         fill: white;
@@ -25,10 +32,10 @@
                         opacity: 1;
                     }
                 </style>
-                <polygon points="0,0 50,50 100,0" data-side="up"/>
+                <polygon points="0,0 50,50 100,0" data-side="top"/>
                 <polygon points="100,0 50,50 100,100" data-side="right"/>
                 <polygon points="0,0 50,50 0,100" data-side="left" />
-                <polygon points="0,100 50,50 100,100" data-side="down"/>
+                <polygon points="0,100 50,50 100,100" data-side="bottom"/>
                 </svg>
         </template>
 
@@ -36,11 +43,83 @@
     </body>
     <script>
         var eventTarget = null;
+
+        function oppositeOf(dir) {
+            var opposites = {
+                'top' : 'bottom',
+                'bottom' : 'top',
+                'left' : 'right',
+                'right' : 'left',
+            }
+            return opposites[dir];
+        }
+
+        function neighborOf(coords, dir) {
+            var neighbor = null;
+            console.log(coords);
+            var col = parseInt(coords.col);
+            var row = parseInt(coords.row);
+            var ncol = col;
+            var nrow = row;
+            switch (dir) {
+                case "top":
+                    if (row > 0)
+                        nrow -= 1;
+                    break;
+
+                case "bottom":
+                    if (row < (window.gridsize - 1))
+                        nrow += 1;
+                    break;
+
+                case "left":
+                    if (col > 0)
+                        ncol -= 1;
+                    break;
+
+                case "right":
+                    if (col < (window.gridsize - 1))
+                        ncol += 1;
+                    break;
+            }
+
+            if (col != ncol || row != nrow) {
+                console.log('trying to find neighbor with ', ncol, nrow);
+                neighbor = document.querySelector('svg.row-' + nrow + '.col-' + ncol);
+            } else {
+                console.log('coords not changed');
+            }
+
+            return neighbor;
+        }
+
+
+        function polyClicked(event) {
+            eventTarget = event;
+            var direction = event.target.dataset.side;
+            var svg = event.target.parentNode;
+            var dataset = svg.dataset;
+            
+            svg.classList.add(direction);
+            console.log("Poly clicked on [", direction, "] on grid [", dataset.col, ',', dataset.row, ']');
+            var neighbor = neighborOf(dataset, direction);
+            if (neighbor != null) {
+                console.log('Has neighbor')
+                neighbor.classList.add(oppositeOf(direction));
+            } else { 
+                console.log('No neighbor');
+            }
+            console.log(event);
+            return true;
+        }
+
+
         document.querySelector('#create-grid').addEventListener('click', function(event) {
             console.log('clicked');
             var grid = document.querySelector('#grid-container');
             grid.innerHTML = "";
             var gridsize = parseInt(document.querySelector('#gridsize').value, 10);
+            window.gridsize = gridsize;
             var maxw = window.innerWidth;
             var maxh = window.innerHeight;
             if (maxw > maxh) {
@@ -53,22 +132,18 @@
             grid.style.height  = (gridpx) + "px";
             grid.style.display = "block";
             
-            function polyClicked(event) {
-                eventTarget = event;
-                var direction = event.target.dataset.side;
-                var dataset = event.target.parentNode.dataset;
-                console.log("Poly clicked on [", direction, "] on grid [", dataset.col, ',', dataset.row, ']');
-                console.log(event);
-                return true;
-            }
+            
             
             for (let row = 0; row < gridsize; row++) {
                 for (let col = 0; col < gridsize; col++) {
                     let clone = document.querySelector('#svg-holder').content.cloneNode(true);
-                    clone.firstElementChild.style.width = size + "px";
-                    clone.firstElementChild.style.height = size + "px";
-                    clone.firstElementChild.setAttribute('data-row', row);
-                    clone.firstElementChild.setAttribute('data-col', col);
+                    let svg = clone.firstElementChild;
+                    svg.style.width = size + "px";
+                    svg.style.height = size + "px";
+                    svg.setAttribute('data-row', row);
+                    svg.setAttribute('data-col', col);
+                    svg.classList.add('row-' + row);
+                    svg.classList.add('col-' + col);
                     for (let poly of clone.querySelectorAll('polygon')) {
                         poly.addEventListener('click', polyClicked);
                     }
