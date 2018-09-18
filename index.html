@@ -17,6 +17,15 @@
                 background: white;
                 margin-top: 2em;
             }
+            polygon {
+                fill: white;
+                border: 0;
+            }
+
+            polygon:hover {
+                stroke: red;
+                stroke-width: 1px;
+            }
 
         </style>
     </head>
@@ -24,16 +33,6 @@
         <input type="number" id="gridsize" value="10"/> <button id="create-grid">Create grid</button>
         <template id="svg-holder">
             <svg xmlns="http://www.w3.org/2000/svg" class="boxtemplate" viewBox="0 0 100 100">
-                <style>
-                    polygon {
-                        fill: white;
-                    }
-
-                    polygon:hover {
-                        fill: red !important;
-                        opacity: 1;
-                    }
-                </style>
                 <polygon points="0,0 50,50 100,0" data-side="top"/>
                 <polygon points="100,0 50,50 100,100" data-side="right"/>
                 <polygon points="0,0 50,50 0,100" data-side="left" />
