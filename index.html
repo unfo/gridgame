@@ -3,34 +3,23 @@
     <title>The Grid Game</title>
 
     <style>
-        div { margin: 0; padding: 0; }
+        svg { margin: -3; padding: 0; }
         #grid-container {
             display: none;
-            background: yellow;
+            background: white;
             margin-top: 2em;
         }
-        .column, .row {
-            
-            display: inline-block;
-        }
-        .column {
-            width: 2px;
-            background: red;
-        }
-        .row {
-            background: green;
-            height: 2px;
-        }
+
     </style>
 </head>
 <body>
 <input type="number" id="gridsize" value="5"/> <button id="create-grid">Create grid</button>
 <template id="svg-holder">
-        <svg xmlns="http://www.w3.org/2000/svg" class="boxtemplate" viewBox="0 0 100 100" style="border: 1px solid black">
+        <svg xmlns="http://www.w3.org/2000/svg" class="boxtemplate" viewBox="0 0 100 100" style="border: 1px dashed lightgrey">
             <style>
                 polygon {
-                    opacity: 0.6;
                     fill: white;
+
                 }
                 polygon:hover {
                     fill: red !important;
@@ -50,8 +39,9 @@
     var eventTarget = null;
         document.querySelector('#create-grid').addEventListener('click', function(event) {
             console.log('clicked');
-            var gridsize = parseInt(document.querySelector('#gridsize').value, 10);
             var grid = document.querySelector('#grid-container');
+            grid.innerHTML = "";
+            var gridsize = parseInt(document.querySelector('#gridsize').value, 10);
             var maxw = window.innerWidth;
             var maxh = window.innerHeight;
             if (maxw > maxh) {
@@ -60,8 +50,8 @@
                 var gridpx = Math.ceil(maxw * 0.8);
             }
             var size = Math.floor(gridpx / gridsize);
-            grid.style.width   = (gridpx + 30) + "px";
-            grid.style.height  = (gridpx + 30) + "px";
+            grid.style.width   = (gridpx) + "px";
+            grid.style.height  = (gridpx) + "px";
             grid.style.display = "block";
             
             function polyClicked(event) {
