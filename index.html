@@ -1,42 +1,41 @@
 <html>
-<head>
-    <title>The Grid Game</title>
+    <head>
+        <title>The Grid Game</title>
+        <style>
+            svg { margin: -3; padding: 0; } /* margin -3?! Y U SO SRS */
+            #grid-container {
+                display: none;
+                background: white;
+                margin-top: 2em;
+            }
 
-    <style>
-        svg { margin: -3; padding: 0; }
-        #grid-container {
-            display: none;
-            background: white;
-            margin-top: 2em;
-        }
+        </style>
+    </head>
+    <body>
+        <input type="number" id="gridsize" value="5"/> <button id="create-grid">Create grid</button>
+        <template id="svg-holder">
+            <svg xmlns="http://www.w3.org/2000/svg" class="boxtemplate" viewBox="0 0 100 100" style="border: 1px dashed lightgrey">
+                <style>
+                    polygon {
+                        fill: white;
+                    }
 
-    </style>
-</head>
-<body>
-<input type="number" id="gridsize" value="5"/> <button id="create-grid">Create grid</button>
-<template id="svg-holder">
-        <svg xmlns="http://www.w3.org/2000/svg" class="boxtemplate" viewBox="0 0 100 100" style="border: 1px dashed lightgrey">
-            <style>
-                polygon {
-                    fill: white;
-
-                }
-                polygon:hover {
-                    fill: red !important;
-                    opacity: 1;
-                }
+                    polygon:hover {
+                        fill: red !important;
+                        opacity: 1;
+                    }
                 </style>
                 <polygon points="0,0 50,50 100,0" data-side="up"/>
                 <polygon points="100,0 50,50 100,100" data-side="right"/>
                 <polygon points="0,0 50,50 0,100" data-side="left" />
                 <polygon points="0,100 50,50 100,100" data-side="down"/>
-         </svg>
-</template>
+                </svg>
+        </template>
 
-<div id="grid-container"></div>
-</body>
-<script>
-    var eventTarget = null;
+        <div id="grid-container"></div>
+    </body>
+    <script>
+        var eventTarget = null;
         document.querySelector('#create-grid').addEventListener('click', function(event) {
             console.log('clicked');
             var grid = document.querySelector('#grid-container');
