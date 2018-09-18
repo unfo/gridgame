@@ -5,11 +5,13 @@
             svg {
                  margin: -3; padding: 0; 
                  border: 1px dashed lightgrey;
+                 float: left;
             } /* margin -3?! Y U SO SRS */
             .top { border-top: 1px solid red; }
             .bottom { border-bottom: 1px solid red; }
             .left { border-left: 1px solid red; }
             .right { border-right: 1px solid red; }
+            .newline { clear: both;}
             #grid-container {
                 display: none;
                 background: white;
@@ -19,7 +21,7 @@
         </style>
     </head>
     <body>
-        <input type="number" id="gridsize" value="5"/> <button id="create-grid">Create grid</button>
+        <input type="number" id="gridsize" value="10"/> <button id="create-grid">Create grid</button>
         <template id="svg-holder">
             <svg xmlns="http://www.w3.org/2000/svg" class="boxtemplate" viewBox="0 0 100 100">
                 <style>
@@ -93,7 +95,6 @@
             return neighbor;
         }
 
-
         function polyClicked(event) {
             eventTarget = event;
             var direction = event.target.dataset.side;
@@ -105,6 +106,7 @@
             var neighbor = neighborOf(dataset, direction);
             if (neighbor != null) {
                 console.log('Has neighbor')
+                console.log(neighbor);
                 neighbor.classList.add(oppositeOf(direction));
             } else { 
                 console.log('No neighbor');
@@ -128,8 +130,8 @@
                 var gridpx = Math.ceil(maxw * 0.8);
             }
             var size = Math.floor(gridpx / gridsize);
-            grid.style.width   = (gridpx) + "px";
-            grid.style.height  = (gridpx) + "px";
+            grid.style.width   = "95%";
+            grid.style.height  = "95%";
             grid.style.display = "block";
             
             
@@ -144,14 +146,16 @@
                     svg.setAttribute('data-col', col);
                     svg.classList.add('row-' + row);
                     svg.classList.add('col-' + col);
+                    if (col == 0) {
+                        svg.classList.add('newline');
+                    }
                     for (let poly of clone.querySelectorAll('polygon')) {
                         poly.addEventListener('click', polyClicked);
                     }
                     grid.appendChild(clone);
                 }
             }
-            event.preventDefault();
-            return false;
+            
         });
         
     </script>
